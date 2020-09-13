@@ -9,6 +9,8 @@ thumbs.db
 #config.py
 .idea/*
 
+certs/
+
 # Environments
 .env
 .venv
