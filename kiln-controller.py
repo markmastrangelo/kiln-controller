@@ -71,9 +71,11 @@ def handle_api():
         clean_session=False,
         keep_alive_secs=6,
     )
+    log.info(mqtt_connection)
 
     connect_future = mqtt_connection.connect()
     connect_future.result()
+    log.info("connect")
     message = "{} [{}]".format(1, 1)
 
     mqtt_connection.publish(topic="test", payload=message, qos=mqtt.QoS.AT_LEAST_ONCE)
