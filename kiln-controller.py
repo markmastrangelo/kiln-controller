@@ -51,7 +51,7 @@ def index():
     return bottle.redirect("/picoreflow/index.html")
 
 
-@app.route("/test")
+@app.post("/test")
 def handle_api():
     log.info("/test is alive")
     log.info(bottle.request.json)
