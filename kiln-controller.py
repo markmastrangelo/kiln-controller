@@ -65,8 +65,8 @@ def handle_api():
         pri_key_filepath=os.getenv("key"),
         client_bootstrap=client_bootstrap,
         ca_filepath=os.getenv("root_ca"),
-        # on_connection_interrupted=on_connection_interrupted,
-        # on_connection_resumed=on_connection_resumed,
+        on_connection_interrupted=on_connection_interrupted,
+        on_connection_resumed=on_connection_resumed,
         client_id=os.getenv("client_id"),
         clean_session=False,
         keep_alive_secs=6,
@@ -82,7 +82,22 @@ def handle_api():
 
     return {"success": True}
 
+# Callback when connection is accidentally lost.
+def on_connection_interrupted(connection, error, **kwargs):
+    print("Connection interrupted. error: {}".format(error))
 
+
+# Callback when an interrupted connection is re-established.
+def on_connection_resumed(connection, return_code, session_present, **kwargs):
+    print("Connection resumed. return_code: {} session_present: {}".format(return_code, session_present))
+
+    if return_code == mqtt.ConnectReturnCode.ACCEPTED and not session_present:
+        print("Session did not persist. Resubscribing to existing topics...")
+        resubscribe_future, _ = connection.resubscribe_existing_topics()
+
+        # Cannot synchronously wait for resubscribe result because we're on the connection's event-loop thread,
+        # evaluate result with a callback instead.
+        resubscribe_future.add_done_callback(on_resubscribe_complete)
 @app.post("/api")
 def handle_api():
     log.info("/api is alive")
