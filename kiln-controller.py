@@ -54,14 +54,14 @@ def handle_api():
     ca_filepath=os.getenv('root_ca'),
     # on_connection_interrupted=on_connection_interrupted,
     # on_connection_resumed=on_connection_resumed,
-    client_id=os.getenv(client_id),
+    client_id=os.getenv('client_id'),
     clean_session=False,
     keep_alive_secs=6)
 
     connect_future = mqtt_connection.connect()
     connect_future.result()
     message = "{} [{}]".format(1,1)
-    
+
     mqtt_connection.publish(
     topic="test",
     payload=message,
