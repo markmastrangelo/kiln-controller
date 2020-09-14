@@ -16,6 +16,7 @@ from geventwebsocket.handler import WebSocketHandler
 # aws stuff
 from awscrt import io, mqtt, auth, http
 from awsiot import mqtt_connection_builder
+from awscrt.io import LogLevel
 
 try:
     sys.dont_write_bytecode = True
@@ -42,7 +43,7 @@ app = bottle.Bottle()
 oven = Oven()
 ovenWatcher = OvenWatcher(oven)
 
-io.init_logging(getattr(io.LogLevel, args.verbosity), "stderr")
+io.init_logging(LogLevel.Debug, "stderr")
 
 
 @app.route("/")
